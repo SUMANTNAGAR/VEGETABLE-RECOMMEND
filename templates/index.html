@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Sabzi Chef Chatbot</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Baloo+Bhai+2:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', 'Baloo Bhai 2', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            animation: bgmove 10s linear infinite alternate;
+        }
+        @keyframes bgmove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 480px;
+            height: 92vh;
+            background: #fff;
+            box-shadow: 0 8px 32px rgba(44, 120, 72, 0.18);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        .chat-header {
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+            color: #fff;
+            padding: 22px 20px 18px 20px;
+            font-size: 1.7em;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-weight: 600;
+            text-align: center;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(44, 120, 72, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .chat-header .sabzi-icon {
+            font-size: 1.5em;
+            filter: drop-shadow(0 2px 2px #2e7d32aa);
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 24px 18px 18px 18px;
+            overflow-y: auto;
+            background: linear-gradient(120deg, #e8f5e9 60%, #f1f8e9 100%);
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.5s;
+        }
+        .message {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-end;
+            animation: fadeInUp 0.5s;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-bubble {
+            max-width: 80%;
+            padding: 15px 22px;
+            border-radius: 22px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            box-shadow: 0 2px 12px rgba(44, 120, 72, 0.07);
+            font-size: 1.08em;
+            transition: background 0.3s;
+        }
+        .message.bot .message-bubble {
+            background: linear-gradient(120deg, #b2f7ef 60%, #e0f7fa 100%);
+            color: #1b5e20;
+            border-bottom-left-radius: 6px;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message.user .message-bubble {
+            background: linear-gradient(120deg, #43e97b 60%, #38f9d7 100%);
+            color: #fff;
+            border-bottom-right-radius: 6px;
+        }
+        .input-area {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+        .input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1.5px solid #a5d6a7;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            margin-right: 10px;
+            background: #f1f8e9;
+            transition: border 0.3s;
+        }
+        .input-area input[type="text"]:focus {
+            border: 1.5px solid #43e97b;
+        }
+        .input-area button {
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 22px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 8px #43e97b33;
+            transition: background 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-area button:hover {
+            background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+            box-shadow: 0 4px 16px #43e97b44;
+        }
+        .options-area {
+            padding: 12px 20px 18px 20px;
+            background: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            display: none;
+        }
+        .option-button {
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border: none;
+            border-radius: 22px;
+            padding: 12px 22px;
+            font-size: 1.08em;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 8px #43e97b22;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: fadeInUp 0.4s;
+            width: 100%;
+            justify-content: center;
+        }
+        .option-button:hover {
+            background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+            box-shadow: 0 4px 16px #43e97b44;
+            transform: translateY(-2px) scale(1.04);
+        }
+        .main-action-button {
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 16px 24px;
+            font-size: 1.15em;
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px #43e97b33;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .main-action-button:hover {
+            background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+            box-shadow: 0 4px 16px #43e97b44;
+        }
+        .back-button {
+            background: #f44336;
+        }
+        .back-button:hover {
+            background: #da190b;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            border-radius: 12px;
+            background: #f1f8e9;
+            margin-top: 10px;
+        }
+        .checkbox-group label {
+            margin-bottom: 7px;
+            cursor: pointer;
+            padding: 7px 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.05em;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .checkbox-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 18px;
+            gap: 12px;
+        }
+        .checkbox-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1.08em;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+        .checkbox-buttons .save-button {
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+        .checkbox-buttons .save-button:hover {
+            background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+        }
+        .checkbox-buttons .back-button-small {
+            background: #6c757d;
+            color: white;
+        }
+        .checkbox-buttons .back-button-small:hover {
+            background: #5a6268;
+        }
+        .loading-dots {
+            display: inline-block;
+            position: relative;
+            width: 40px;
+            height: 20px;
+            text-align: center;
+        }
+        .loading-dots div {
+            display: inline-block;
+            position: absolute;
+            left: 8px;
+            width: 8px;
+            background: #43e97b;
+            animation: loading 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+        }
+        .loading-dots div:nth-child(1) {
+            left: 8px;
+            animation-delay: -0.24s;
+        }
+        .loading-dots div:nth-child(2) {
+            left: 20px;
+            animation-delay: -0.12s;
+        }
+        .loading-dots div:nth-child(3) {
+            left: 32px;
+            animation-delay: 0s;
+        }
+        @keyframes loading {
+            0% { top: 8px; height: 16px; }
+            50%, 100% { top: 12px; height: 8px; }
+        }
+        /* Seasonal Veggies Card Grid */
+        .seasonal-veg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 14px;
+            margin: 18px 0 8px 0;
+        }
+        .seasonal-veg-card {
+            background: linear-gradient(120deg, #e0f7fa 60%, #b2f7ef 100%);
+            border-radius: 14px;
+            box-shadow: 0 2px 8px #43e97b22;
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 1.08em;
+            color: #1b5e20;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: fadeInUp 0.5s;
+        }
+        .seasonal-veg-card:hover {
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: 0 4px 16px #43e97b44;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #e0f2f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a5d6a7;
+            border-radius: 8px;
+        }
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            .chat-header {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                font-size: 1.2em;
+                padding: 16px 8px 12px 8px;
+            }
+            .chat-messages {
+                padding: 12px 4px 10px 4px;
+            }
+            .input-area, .options-area {
+                padding: 8px 4px;
+            }
+            .options-area {
+                display: flex !important;
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+                padding: 8px 4px !important;
+            }
+            .option-button {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                font-size: 1.1em !important;
+                margin: 0 0 8px 0 !important;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <span class="sabzi-icon">🥦</span> My Personal Sabzi Chef
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            </div>
+        <div class="adsense-unit" id="adsense-container">
+            <!-- AdSense code here if needed -->
+        </div>
+        <div class="options-area" id="options-area">
+            </div>
+        <div class="input-area" id="input-area">
+            <input type="text" id="user-input" placeholder="Type your message..." style="display: none;">
+            <button id="send-button" style="display: none;">Send</button>
+            <input type="text" id="new-member-name-input" placeholder="Enter new member name..." style="display: none;">
+            <button id="next-button" style="display: none;">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const optionsArea = document.getElementById('options-area');
+        const inputArea = document.getElementById('input-area'); // New: reference to input area
+        const newMemberNameInput = document.getElementById('new-member-name-input'); // New: new member name input
+        const nextButton = document.getElementById('next-button'); // New: Next button
+        const BASE_URL = window.location.origin; // Dynamic BASE_URL for mobile/desktop
+
+        let currentFlow = 'main_menu'; // 'main_menu', 'manage_family_choice', 'select_existing_member', 'enter_new_member_name', 'select_veg', 'select_present_members'
+        let currentMemberName = '';
+        let allVegetables = []; // To store the list of all vegetables
+        let memberVegetableCheckboxes = {}; // To store checkbox references for veg selection
+
+        // --- Helper Functions ---
+        function appendMessage(sender, message, options = [], customHtml = '') {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.classList.add('message-bubble');
+            if (customHtml) {
+                bubbleDiv.innerHTML = customHtml;
+            } else if (typeof message === 'string' && message.includes('\n') && sender === 'bot' && message.startsWith('Current season vegetables')) {
+                // Special rendering for seasonal veggies as cards
+                const lines = message.split('\n').filter(x => x.trim() !== '');
+                if (lines.length > 1) {
+                    const vegList = lines.slice(1).join(' ').split(',').map(x => x.trim()).filter(x => x);
+                    let gridHtml = '<div class="seasonal-veg-grid">';
+                    vegList.forEach(veg => {
+                        gridHtml += `<div class="seasonal-veg-card">${veg}</div>`;
+                    });
+                    gridHtml += '</div>';
+                    bubbleDiv.innerHTML = `<div style="font-weight:600;margin-bottom:8px;">${lines[0]}</div>` + gridHtml;
+                } else {
+                    bubbleDiv.textContent = message;
+                }
+            } else if (typeof message === 'string' && message.includes('\n')) {
+                const parts = message.split('\n');
+                parts.forEach(part => {
+                    if (part.trim() !== '') {
+                        const p = document.createElement('p');
+                        p.textContent = part.trim();
+                        bubbleDiv.appendChild(p);
+                    }
+                });
+            } else {
+                bubbleDiv.textContent = message;
+            }
+            messageDiv.appendChild(bubbleDiv);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            displayOptions(options);
+        }
+
+        function displayOptions(options) {
+            optionsArea.innerHTML = ''; // Clear previous options
+            if (options.length > 0) {
+                optionsArea.style.display = 'flex';
+                options.forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.classList.add('option-button');
+                    button.textContent = optionText;
+                    button.onclick = () => handleOptionClick(optionText);
+                    optionsArea.appendChild(button);
+                });
+            } else {
+                optionsArea.style.display = 'none';
+            }
+        }
+
+        function toggleInput(showUserInput = false, showNewMemberInput = false) {
+            userInput.style.display = showUserInput ? 'block' : 'none';
+            sendButton.style.display = showUserInput ? 'block' : 'none';
+            newMemberNameInput.style.display = showNewMemberInput ? 'block' : 'none';
+            nextButton.style.display = showNewMemberInput ? 'block' : 'none';
+
+            if (showUserInput) userInput.focus();
+            if (showNewMemberInput) newMemberNameInput.focus();
+        }
+
+        function appendLoadingDots() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.classList.add('message', 'bot');
+            loadingDiv.id = 'loading-message';
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.classList.add('message-bubble');
+            bubbleDiv.innerHTML = `<div class="loading-dots"><div></div><div></div><div></div></div>`;
+            loadingDiv.appendChild(bubbleDiv);
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeLoadingDots() {
+            const loadingDiv = document.getElementById('loading-message');
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
+        }
+
+        async function fetchAPI(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                };
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                appendLoadingDots();
+                const response = await fetch(`${BASE_URL}${endpoint}`, options);
+                removeLoadingDots();
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Something went wrong with the API call.');
+                }
+                return await response.json();
+            } catch (error) {
+                removeLoadingDots();
+                appendMessage('bot', `Oops! An error occurred: ${error.message}. Please try again.`);
+                console.error('API Error:', error);
+                // Optionally, go back to main menu on critical errors
+                // showMainMenu(); 
+                return { status: 'error', message: error.message }; 
+            }
+        }
+
+        // --- Chatbot Flow Functions ---
+
+        async function showMainMenu() {
+            chatMessages.innerHTML = '';
+            currentFlow = 'main_menu';
+            toggleInput(false, false); // No direct input at main menu
+            appendMessage('bot', "Welcome to My Personal Sabzi Chef! What would you like to do?", 
+                ["Manage Family & Favorite Vegetables", "What to Cook Today?", "Current Season Vegetables", "Exit Application"]);
+            // Reset state for safety
+            currentMemberName = '';
+            memberVegetableCheckboxes = {};
+        }
+
+        async function handleOptionClick(optionText) {
+            appendMessage('user', optionText); // Show user's choice in chat
+
+            switch (currentFlow) {
+                case 'main_menu':
+                    if (optionText === "Manage Family & Favorite Vegetables") {
+                        await manageFamilyStartFlow();
+                    } else if (optionText === "What to Cook Today?") {
+                        await recommendSabziFlow();
+                    } else if (optionText === "Current Season Vegetables") {
+                        // Fetch and show current season vegetables
+                        const vegList = await fetchAPI('/api/seasonal_vegetables');
+                        if (Array.isArray(vegList) && vegList.length > 0) {
+                            appendMessage('bot', `Current season vegetables available in the market:\n\n${vegList.join(', ')}`);
+                        } else {
+                            appendMessage('bot', 'No seasonal vegetables found or an error occurred.');
+                        }
+                        showMainMenu();
+                    } else if (optionText === "Exit Application") {
+                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
+                        toggleInput(false, false); // Hide all inputs
+                        optionsArea.style.display = 'none';
+                    }
+                    break;
+                case 'manage_family_choice':
+                    if (optionText === "Update Existing Member's Preferences") {
+                        await selectExistingMemberFlow();
+                    } else if (optionText === "Add New Member") {
+                        await addNewMemberNameFlow();
+                    } else if (optionText === "Back to Main Menu") {
+                        showMainMenu();
+                    } else if (optionText === "What to Cook Today?") {
+                        await recommendSabziFlow();
+                    } else if (optionText === "Exit Application") {
+                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
+                        toggleInput(false, false);
+                        optionsArea.style.display = 'none';
+                    }
+                    break;
+                case 'select_existing_member':
+                    if (optionText === "Back to Main Menu") {
+                        showMainMenu();
+                    } else if (optionText === "What to Cook Today?") {
+                        await recommendSabziFlow();
+                    } else if (optionText === "Exit Application") {
+                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
+                        toggleInput(false, false);
+                        optionsArea.style.display = 'none';
+                    } else {
+                        currentMemberName = optionText;
+                        await selectVegetablesFlow(optionText);
+                    }
+                    break;
+                case 'select_veg':
+                    if (optionText === "Back to Main Menu") {
+                        showMainMenu();
+                    } else if (optionText === "What to Cook Today?") {
+                        await recommendSabziFlow();
+                    } else if (optionText === "Exit Application") {
+                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
+                        toggleInput(false, false);
+                        optionsArea.style.display = 'none';
+                    }
+                    break;
+                case 'select_present_members':
+                    if (optionText === "Back to Main Menu") {
+                        showMainMenu();
+                    } else if (optionText === "What to Cook Today?") {
+                        await recommendSabziFlow();
+                    } else if (optionText === "Exit Application") {
+                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
+                        toggleInput(false, false);
+                        optionsArea.style.display = 'none';
+                    }
+                    break;
+                default:
+                    appendMessage('bot', "I'm not sure how to respond to that option. Please try again.");
+                    showMainMenu(); // Fallback to main menu
+                    break;
+            }
+        }
+
+        async function manageFamilyStartFlow() {
+            chatMessages.innerHTML = '';
+            currentFlow = 'manage_family_choice';
+            currentMemberName = '';
+            memberVegetableCheckboxes = {};
+            const response = await fetchAPI('/api/family_members');
+            if (response.status === 'error') {
+                showMainMenu();
+                return;
+            }
+
+            const members = response.family_members || [];
+            let memberNames = members.map(m => m.name);
+            
+            let options = [];
+            if (memberNames.length > 0) {
+                appendMessage('bot', `You currently have ${memberNames.length} family member(s) registered.`);
+                options.push("Update Existing Member's Preferences");
+            } else {
+                appendMessage('bot', "You don't have any family members added yet.");
+            }
+            options.push("Add New Member");
+            options.push("Back to Main Menu");
+
+            appendMessage('bot', "How would you like to manage your family members?", options);
+        }
+        
+        async function selectExistingMemberFlow() {
+            currentFlow = 'select_existing_member';
+            currentMemberName = '';
+            memberVegetableCheckboxes = {};
+            const response = await fetchAPI('/api/family_members');
+            if (response.status === 'error') {
+                showMainMenu();
+                return;
+            }
+            const members = response.family_members || [];
+            if (members.length === 0) {
+                appendMessage('bot', "No existing members found. Please add a new member first.");
+                await manageFamilyStartFlow(); // Go back to options
+                return;
+            }
+
+            let memberNames = members.map(m => m.name);
+            appendMessage('bot', "Which member would you like to update?");
+            displayOptions(memberNames.concat(["Back to Main Menu", "What to Cook Today?", "Exit Application"]));
+        }
+
+        async function addNewMemberNameFlow() {
+            currentFlow = 'enter_new_member_name';
+            currentMemberName = '';
+            memberVegetableCheckboxes = {};
+            toggleInput(false, true); // Show new member name input and Next button
+            newMemberNameInput.value = ''; // Clear previous input
+            appendMessage('bot', "Please type the name of the new family member you'd like to add.");
+            displayOptions(["Back to Main Menu"]); // Offer back option
+        }
+
+        nextButton.addEventListener('click', async () => {
+            const newName = newMemberNameInput.value.trim();
+            if (!newName) {
+                appendMessage('bot', "Member name cannot be empty. Please enter a name.");
+                return;
+            }
+            // Check for duplicates
+            const existingMembersResponse = await fetchAPI('/api/family_members');
+            if (existingMembersResponse.status !== 'error') {
+                const existingNames = (existingMembersResponse.family_members || []).map(m => m.name.toLowerCase());
+                if (existingNames.includes(newName.toLowerCase())) {
+                    appendMessage('bot', `'${newName}' already exists. Please update the existing member or choose a different name.`);
+                    return;
+                }
+            }
+            
+            appendMessage('user', newName); // Show the new name as user message
+            currentMemberName = newName; // Set the current member
+            await selectVegetablesFlow(newName); // Proceed to vegetable selection
+            toggleInput(false, false); // Hide input after processing
+        });
+        
+        // This function now handles both new and existing member veg selection
+        async function selectVegetablesFlow(memberName) {
+            currentFlow = 'select_veg';
+            toggleInput(false, false); // Hide generic input
+            currentMemberName = memberName;
+            memberVegetableCheckboxes = {};
+
+            const allVegResponse = await fetchAPI('/api/vegetables');
+            if (!Array.isArray(allVegResponse)) {
+                showMainMenu();
+                return;
+            }
+            allVegetables = allVegResponse; // Store all vegetables
+
+            const memberDataResponse = await fetchAPI('/api/family_members');
+            let currentFavs = [];
+            if (memberDataResponse.status !== 'error') {
+                const memberInfo = (memberDataResponse.family_members || []).find(m => m.name.toLowerCase() === memberName.toLowerCase());
+                if (memberInfo) {
+                    currentFavs = memberInfo.favorite_vegetables;
+                }
+            }
+            
+            // Generate HTML for checkboxes
+            let checkboxHtml = `
+                <p>Select ${memberName}'s favorite vegetables:</p>
+                <div class="checkbox-group">
+            `;
+            memberVegetableCheckboxes = {}; // Reset checkbox references
+            allVegetables.forEach(veg => {
+                const isChecked = currentFavs.includes(veg) ? 'checked' : '';
+                const id = `veg-${veg.replace(/[^a-zA-Z0-9]/g, '')}`; // Simple ID for checkbox
+                checkboxHtml += `
+                    <label for="${id}">
+                        <input type="checkbox" id="${id}" value="${veg}" ${isChecked}>
+                        ${veg}
+                    </label>
+                `;
+            });
+            checkboxHtml += `</div>
+                <div class="checkbox-buttons">
+                    <button class="save-button" id="save-veg-button">Save Favorites</button>
+                </div>
+            `;
+            // Debug: Log the generated HTML
+            console.log('Generated checkbox HTML:', checkboxHtml);
+            // Add a special message bubble for the checkboxes
+            appendMessage('bot', '', [], checkboxHtml); 
+
+            // Add global navigation options
+            displayOptions(["Back to Main Menu", "What to Cook Today?", "Exit Application"]);
+
+            // Attach event listeners after DOM update
+            setTimeout(() => {
+                const saveBtn = document.getElementById('save-veg-button');
+                if (saveBtn) {
+                    saveBtn.onclick = async () => {
+                        const selectedVeggies = Array.from(document.querySelectorAll('.checkbox-group input[type=\"checkbox\"]:checked'))
+                                                    .map(checkbox => checkbox.value);
+                        if (selectedVeggies.length === 0) {
+                            appendMessage('bot', "Please select at least one favorite vegetable.");
+                            return;
+                        }
+                        const saveResponse = await fetchAPI('/api/set_preferences', 'POST', {
+                            member_name: memberName,
+                            favorite_vegetables: selectedVeggies
+                        });
+                        if (saveResponse.status === 'success') {
+                            appendMessage('bot', saveResponse.message);
+                            // Reset state after save
+                            currentMemberName = '';
+                            memberVegetableCheckboxes = {};
+                            // Show navigation options again
+                            displayOptions(["Back to Main Menu", "What to Cook Today?", "Exit Application"]);
+                        } else {
+                            appendMessage('bot', `Failed to save preferences: ${saveResponse.message || 'Unknown error'}. Please try again.`);
+                        }
+                    };
+                }
+            }, 0);
+        }
+
+        async function recommendSabziFlow() {
+            chatMessages.innerHTML = '';
+            currentFlow = 'select_present_members';
+            toggleInput(false, false); // Hide direct input
+
+            // Reset state for present members
+            let presentMemberCheckboxes = {};
+
+            const response = await fetchAPI('/api/family_members');
+            if (response.status === 'error') {
+                showMainMenu();
+                return;
+            }
+            const members = response.family_members || [];
+            if (members.length === 0) {
+                appendMessage('bot', "No family members added yet. Please add members first via 'Manage Family & Favorite Vegetables' option.");
+                showMainMenu();
+                return;
+            }
+
+            let memberNames = members.map(m => m.name);
+            // Generate HTML for present members checkboxes
+            let checkboxHtml = `
+                <p>Who is present today?</p>
+                <div class="checkbox-group">
+            `;
+            memberNames.forEach(name => {
+                const id = `present-member-${name.replace(/[^a-zA-Z0-9]/g, '')}`;
+                checkboxHtml += `
+                    <label for="${id}">
+                        <input type="checkbox" id="${id}" value="${name}">
+                        ${name}
+                    </label>
+                `;
+            });
+            checkboxHtml += `</div>
+                <div class="checkbox-buttons">
+                    <button class="save-button" id="get-recommendation-button">Get Recommendation</button>
+                </div>
+            `;
+            appendMessage('bot', '', [], checkboxHtml);
+
+            // Add global navigation options
+            displayOptions(["Back to Main Menu", "Exit Application"]);
+
+            // Attach event listener to Get Recommendation button
+            setTimeout(() => {
+                const getRecBtn = document.getElementById('get-recommendation-button');
+                if (getRecBtn) {
+                    getRecBtn.onclick = async () => {
+                        const presentMembers = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked'))
+                                                    .map(checkbox => checkbox.value);
+                        if (presentMembers.length === 0) {
+                            appendMessage('bot', "Please select at least one member present today.");
+                            return;
+                        }
+                        // Remove only the last bot message (previous recommendation), not the entire chat
+                        const allBotMessages = chatMessages.querySelectorAll('.message.bot');
+                        if (allBotMessages.length > 1) {
+                            allBotMessages[allBotMessages.length - 1].remove();
+                        }
+                        const recommendationResponse = await fetchAPI('/api/recommend_sabzi', 'POST', { present_members: presentMembers });
+                        if (recommendationResponse.status === 'success' || recommendationResponse.status === 'warning' || recommendationResponse.status === 'info') {
+                            appendMessage('bot', recommendationResponse.recommendation || recommendationResponse.message);
+                        } else {
+                            appendMessage('bot', `Sorry, I couldn't get a recommendation: ${recommendationResponse.message || 'Unknown error'}.`);
+                        }
+                        // Show navigation options
+                        displayOptions(["Back to Main Menu", "What to Cook Today?", "Exit Application"]);
+                    };
+                }
+            }, 0);
+        }
+
+        // Event Listeners (adjusted for new input elements)
+        // Note: user-input and send-button are now generally hidden,
+        // only appearing when explicitly toggled by specific flows.
+        // We'll keep their listeners in case we ever toggle them on.
+        // We'll keep their listeners in case we ever toggle them on.
+        sendButton.addEventListener('click', sendUserMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendUserMessage();
+            }
+        });
+
+        // This is important: handle global option clicks
+        // Initial message when the chat loads
+        showMainMenu();
+
+        function sendUserMessage() {
+            // Not implemented. This is a placeholder to prevent errors.
+        }
+    </script>
+</body>
+</html>

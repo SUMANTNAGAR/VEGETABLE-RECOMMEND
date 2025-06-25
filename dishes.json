@@ -1,0 +1,300 @@
+[
+  {"name": "Aloo ki Sukhi Sabzi/Aloo Fry/Aloo Bhujia", "ingredients": ["Potato (आलू)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Tamatar ki Sabzi", "ingredients": ["Potato (आलू)", "Tomato (टमाटर)", "Onion (प्याज)"]},
+  {"name": "Aloo Gobi (Dry)", "ingredients": ["Potato (आलू)", "Cauliflower (फूलगोभी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Gobi (Gravy)", "ingredients": ["Potato (आलू)", "Cauliflower (फूलगोभी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Matar", "ingredients": ["Potato (आलू)", "Peas (मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Baingan (Dry)", "ingredients": ["Potato (आलू)", "Brinjal (बैंगन)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Baingan (Gravy)", "ingredients": ["Potato (आलू)", "Brinjal (बैंगन)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Methi", "ingredients": ["Potato (आलू)", "Fenugreek Leaves (मेथी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Dum Aloo", "ingredients": ["Potato (आलू)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Jeera Aloo", "ingredients": ["Potato (आलू)"]},
+  {"name": "Aloo Parwal", "ingredients": ["Potato (आलू)", "Pointed Gourd (परवल)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Shimla Mirch", "ingredients": ["Potato (आलू)", "Capsicum (शिमला मिर्च)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Palak Paneer", "ingredients": ["Spinach (पालक)", "Paneer (पनीर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Palak Dal", "ingredients": ["Spinach (पालक)", "Red Lentil (मसूर दाल)", "Pigeon Pea/Toor Dal (अरहर दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Palak ki Sukhi Sabzi", "ingredients": ["Spinach (पालक)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Palak", "ingredients": ["Potato (आलू)", "Spinach (पालक)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Palak Matar", "ingredients": ["Spinach (पालक)", "Peas (मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Bhindi Fry/Bhujia", "ingredients": ["Okra (भिंडी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Bharwan Bhindi", "ingredients": ["Okra (भिंडी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Bhindi Do Pyaza", "ingredients": ["Okra (भिंडी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Tamatar ki Chutney", "ingredients": ["Tomato (टमाटर)", "Onion (प्याज)", "Green Chili (हरी मिर्च)"]},
+  {"name": "Tamatar Soup", "ingredients": ["Tomato (टमाटर)"]},
+
+  {"name": "Pyaz ki Sabzi/Bhujia", "ingredients": ["Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Pyaz ke Pakore", "ingredients": ["Onion (प्याज)"]},
+
+  {"name": "Baingan ka Bharta", "ingredients": ["Brinjal (बैंगन)", "Onion ( प्याज)", "Tomato (टमाटर)", "Green Chili (हरी मिर्च)"]},
+  {"name": "Bharwan Baingan", "ingredients": ["Brinjal (बैंगन)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Baingan Aloo Matar", "ingredients": ["Brinjal (बैंगन)", "Potato (आलू)", "Peas (मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Gobi Fry/Bhujia", "ingredients": ["Cauliflower (फूलगोभी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Matar Gobi", "ingredients": ["Peas (मटर)", "Cauliflower (फूलगोभी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Gobi Manchurian", "ingredients": ["Cauliflower (फूलगोभी)", "Onion ( प्याज)", "Capsicum (शिमला मिर्च)"]},
+
+  {"name": "Patta Gobi ki Sukhi Sabzi", "ingredients": ["Cabbage (पत्तागोभी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Patta Gobi Matar", "ingredients": ["Cabbage (पत्तागोभी)", "Peas (मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Patta Gobi Gajar", "ingredients": ["Cabbage (पत्तागोभी)", "Carrot (गाजर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Gajar ki Sukhi Sabzi", "ingredients": ["Carrot (गाजर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Gajar Matar", "ingredients": ["Carrot (गाजर)", "Peas (मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Mooli ki Sabzi/Bhujia", "ingredients": ["Radish (मूली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Mooli ke Patte ki Sabzi", "ingredients": ["Radish (मूली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Matar Paneer", "ingredients": ["Peas (मटर)", "Paneer (पनीर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Matar Mushroom", "ingredients": ["Peas (मटर)", "Mushroom", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Lauki ki Sabzi (Dahi Gravy)", "ingredients": ["Bottle Gourd (लौकी)", "Curd"]},
+  {"name": "Lauki ki Sabzi (Tamatar Gravy)", "ingredients": ["Bottle Gourd (लौकी)", "Tomato (टमाटर)", "Onion (प्याज)"]},
+  {"name": "Lauki Kofta", "ingredients": ["Bottle Gourd (लौकी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Tori ki Sabzi", "ingredients": ["Ridge Gourd (तोरी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Tori Chane Dal", "ingredients": ["Ridge Gourd (तोरी)", "Split Chickpeas (चना दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kaddu ki Khatti Meethi Sabzi (Petha)", "ingredients": ["Pumpkin (कद्दू)", "Tomato (टमाटर)"]},
+  {"name": "Kaddu ki Sadi Sabzi", "ingredients": ["Pumpkin (कद्दू)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kakdi ka Raita", "ingredients": ["Cucumber (ककड़ी)", "Curd"]},
+  {"name": "Kakdi ka Salad", "ingredients": ["Cucumber (ककड़ी)"]},
+
+  {"name": "Shimla Mirch Pyaz", "ingredients": ["Capsicum (शिमला मिर्च)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Bharwan Shimla Mirch", "ingredients": ["Capsicum (शिमला मिर्च)", "Potato (आलू)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Broccoli ki Sabzi", "ingredients": ["Broccoli (ब्रोकली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Broccoli Matar", "ingredients": ["Broccoli (ब्रोकली)", "Peas (मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Shakarkand ki Chaat", "ingredients": ["Sweet Potato (शकरकंद)"]},
+  {"name": "Shakarkand ki Sukhi Sabzi", "ingredients": ["Sweet Potato (शकरकंद)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Gawar Phali ki Sabzi", "ingredients": ["Cluster Beans (ग्वार फली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Karela Bhujia/Karela Fry", "ingredients": ["Bitter Gourd (करेला)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Bharwan Karela", "ingredients": ["Bitter Gourd (करेला)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Arbi ki Sukhi Sabzi", "ingredients": ["Colocasia (अरबी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Arbi Masala", "ingredients": ["Colocasia (अरबी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Parwal Aloo", "ingredients": ["Pointed Gourd (परवल)", "Potato (आलू)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Bharwan Parwal", "ingredients": ["Pointed Gourd (परवल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kathal ki Sabzi", "ingredients": ["Raw Jackfruit (कटहल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Kathal Kofta", "ingredients": ["Raw Jackfruit (कटहल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Sahjan ki Phali ki Sabzi", "ingredients": ["Drumstick (सहजन की फली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Sahjan ki Phali (in Sambar)", "ingredients": ["Drumstick (सहजन की फली)", "Pigeon Pea/Toor Dal (अरहर दाल)"]},
+
+  {"name": "Sem ki Sukhi Sabzi", "ingredients": ["Flat Beans (सेम फली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Aloo Sem", "ingredients": ["Potato (आलू)", "Flat Beans (सेम फली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kundru ki Sukhi Sabzi", "ingredients": ["Ivy Gourd (कुंदरू/तेंंदली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Ratalu ki Sabzi", "ingredients": ["Yam (रतालू)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Ratalu Chips", "ingredients": ["Yam (रतालू)"]},
+
+  {"name": "Shalgam ki Sabzi", "ingredients": ["Turnip (शलजम)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Chukandar ki Sabzi", "ingredients": ["Beetroot (चुकंदर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Chukandar ka Raita", "ingredients": ["Beetroot (चुकंदर)", "Curd"]},
+  {"name": "Chukandar ka Salad", "ingredients": ["Beetroot (चुकंदर)"]},
+
+  {"name": "Tinda Masala", "ingredients": ["Indian Round Gourd (टिंडा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Tinda ki Sukhi Sabzi", "ingredients": ["Indian Round Gourd (टिंडा)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Jimikand ki Sabzi", "ingredients": ["Elephant Foot Yam (जिमीकंद/सूरन)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Jimikand Tikki/Cutlet", "ingredients": ["Elephant Foot Yam (जिमीकंद/सूरन)"]},
+
+  {"name": "Kamal Kakdi ki Sabzi", "ingredients": ["Lotus Stem (कमल ककड़ी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Kamal Kakdi Pakore/Chips", "ingredients": ["Lotus Stem (कमल ककड़ी)"]},
+
+  {"name": "Moongfali Phali ki Sabzi", "ingredients": ["Green Groundnuts (मूंगफली की फली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "French Beans ki Sukhi Sabzi", "ingredients": ["French Beans (फरासबीन / फ्रेंच बीन्स)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Gajar Beans", "ingredients": ["Carrot (गाजर)", "French Beans (फरासबीन / फ्रेंच बीन्स)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Methi ki Sukhi Sabzi", "ingredients": ["Fenugreek Leaves (मेथी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Methi Matar Malai", "ingredients": ["Fenugreek Leaves (मेथी)", "Peas (मटर)", "Paneer (पनीर)"]},
+
+  {"name": "Bathua ka Saag", "ingredients": ["Chenopodium (बथुआ)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Bathua ka Raita", "ingredients": ["Chenopodium (बथुआ)", "Curd"]},
+
+  {"name": "Cholai ki Sabzi (Green Amaranth)", "ingredients": ["Amaranth Leaves (Green) (हरी चौलाई)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kulfa Saag", "ingredients": ["Purslane (कुल्फा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Arbi ke Patte ki Sabzi", "ingredients": ["Colocasia Leaves (अरबी के पत्ते)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Patra/Aluwadi", "ingredients": ["Colocasia Leaves (अरबी के पत्ते)", "Split Chickpeas (चना दाल)"]},
+
+  {"name": "Hari Pyaz ki Sabzi", "ingredients": ["Spring Onion (हरी प्याज)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kachhe Papite ki Sabzi", "ingredients": ["Raw Papaya (पपीता - कच्चा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Punarnava ki Sabzi", "ingredients": ["Punarnava (पुनर्नवा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Gongura Pachadi (Chutney)", "ingredients": ["Sorrel Leaves (चेंच भाजी / खट्टा पालक)", "Green Chili (हरी मिर्च)"]},
+  {"name": "Chench Bhaji ki Sabzi", "ingredients": ["Sorrel Leaves (चेंच भाजी / खट्टा पालक)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Makhana Curry", "ingredients": ["Lotus Seeds (Makhana - Dry) (कमल गट्टा - सूखा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Laal Saag ki Sabzi (Red Amaranth)", "ingredients": ["Red Amaranth (चोलाई/लाल साग)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Sarson ka Saag", "ingredients": ["Mustard Greens (सरसों का साग)", "Spinach (पालक)", "Fenugreek Leaves (मेथी)"]},
+
+  {"name": "Sahjan ki Patti ki Sabzi", "ingredients": ["Drumstick Leaves (सहजन की पत्ती)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Sahjan ki Patti ka Soup", "ingredients": ["Drumstick Leaves (सहजन की पत्ती)"]},
+
+  {"name": "Kantola ki Sabzi", "ingredients": ["Spiny Gourd (कंटोला/ककोरा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Horse Gram (Green Pod) Sabzi", "ingredients": ["Horse Gram (Green Pod) (कुल्थी/हूलगे - हरी फली)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Asparagus ki Sabzi", "ingredients": ["Asparagus (शतावरी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Kheksa ki Sabzi", "ingredients": ["Teasel Gourd (खेक्सा)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Tendu ki Sabzi (Raw)", "ingredients": ["Indian Persimmon (Raw) (तेंंदू - कच्चा फल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Ker Sabzi", "ingredients": ["Caper Berries (केर)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Sangri Sabzi", "ingredients": ["Desert Beans (सांगरी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Kachari ki Sabzi", "ingredients": ["Wild Cucumber (काचरी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Goolar ki Sabzi (Raw)", "ingredients": ["Cluster Fig (Raw) (गूलर - कच्चा)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Ker-Sangri ki Sabzi", "ingredients": ["Caper Berries (केर)", "Desert Beans (सांगरी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Panchkuta", "ingredients": ["Caper Berries (केर)", "Desert Beans (सांगरी)", "Wild Cucumber (काचरी)", "Amaltas Seeds (कुमती - if you want to add this to vegetables.json)", "Gunda (गूंदा - if you want to add this to vegetables.json)"]},
+  
+  {"name": "Masoor Dal (Red Lentil)", "ingredients": ["Red Lentil (मसूर दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Moong Dal (Green Gram)", "ingredients": ["Green Gram/Moong Dal (मूंग दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Rajma (Kidney Beans)", "ingredients": ["Kidney Beans (राजमा)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Kala Chana (Black Chickpeas) Sabzi", "ingredients": ["Black Chickpeas (काला चना)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Arhar Dal (Pigeon Pea/Toor Dal)", "ingredients": ["Pigeon Pea/Toor Dal (अरहर दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Urad Dal (Black Gram)", "ingredients": ["Black Gram/Urad Dal (उड़द दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Chana Dal (Split Chickpeas)", "ingredients": ["Split Chickpeas (चना दाल)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Lobia Dal (Black-eyed Peas)", "ingredients": ["Black-eyed Peas (लोबिया दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Kulthi Dal (Horse Gram)", "ingredients": ["Horse Gram (Dal) (कुल्थी दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Moth Dal", "ingredients": ["Moth Bean (मोठ दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Soybean ki Sabzi", "ingredients": ["Soybean (सोयाबीन)", "Onion ( प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Pili Moong Dal (Split Yellow Moong Dal)", "ingredients": ["Split Yellow Moong Dal (पीली मूंग दाल)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Kabuli Chana (Chickpeas)", "ingredients": ["Chickpeas/Garbanzo Beans (काबुली चना)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {"name": "Rabodi ki Sabzi", "ingredients": ["Rabodi (Dried Corn Flour Snack) (राबोड़ी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+  {"name": "Vadi ki Sabzi", "ingredients": ["Vadi (Dried Lentil Dumplings) (वादी)", "Onion (प्याज)", "Tomato (टमाटर)"]},
+
+  {
+    "name": "Shahi Paneer",
+    "ingredients": ["Paneer (पनीर)", "Cashews (काजू)", "Cream (मलाई)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Paneer Butter Masala",
+    "ingredients": ["Paneer (पनीर)", "Butter (मक्खन)", "Tomato (टमाटर)", "Onion (प्याज)", "Cream (मलाई)"]
+  },
+  {
+    "name": "Kadai Paneer",
+    "ingredients": ["Paneer (पनीर)", "Capsicum (शिमला मिर्च)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Paneer Tikka Masala",
+    "ingredients": ["Paneer (पनीर)", "Capsicum (शिमला मिर्च)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Paneer Bhurji",
+    "ingredients": ["Paneer (पनीर)", "Onion (प्याज)", "Tomato (टमाटर)", "Green Chili (हरी मिर्च)"]
+  },
+  {
+    "name": "Paneer Do Pyaza",
+    "ingredients": ["Paneer (पनीर)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Lababdar",
+    "ingredients": ["Paneer (पनीर)", "Tomato (टमाटर)", "Onion (प्याज)", "Cream (मलाई)"]
+  },
+  {
+    "name": "Malai Kofta",
+    "ingredients": ["Paneer (पनीर)", "Potato (आलू)", "Cream (मलाई)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Paneer Kolhapuri",
+    "ingredients": ["Paneer (पनीर)", "Onion (प्याज)", "Tomato (टमाटर)", "Coconut (नारियल)"]
+  },
+  {
+    "name": "Rajasthani Paneer Mirch Masala",
+    "ingredients": ["Paneer (पनीर)", "Red Chili (लाल मिर्च)", "Curd (दही)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Gatta Curry",
+    "ingredients": ["Gram Flour (बेसन)", "Curd (दही)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Paneer Tikka Dry",
+    "ingredients": ["Paneer (पनीर)", "Capsicum (शिमला मिर्च)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Lasaniya Paneer (Garlic Paneer)",
+    "ingredients": ["Paneer (पनीर)", "Garlic (लहसुन)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Chhana'r Dalna (Bengali style)",
+    "ingredients": ["Paneer (पनीर)", "Potato (आलू)", "Tomato (टमाटर)", "Ginger (अदरक)"]
+  },
+  {
+    "name": "Paneer Posto",
+    "ingredients": ["Paneer (पनीर)", "Poppy Seeds (खसखस)", "Green Chili (हरी मिर्च)"]
+  },
+  {
+    "name": "Paneer Ghugni",
+    "ingredients": ["Paneer (पनीर)", "Yellow Peas (पीली मटर)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Chettinad",
+    "ingredients": ["Paneer (पनीर)", "Black Pepper (काली मिर्च)", "Coconut (नारियल)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Kurma",
+    "ingredients": ["Paneer (पनीर)", "Coconut (नारियल)", "Cashews (काजू)", "Onion ( प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Ghee Roast",
+    "ingredients": ["Paneer (पनीर)", "Ghee (घी)", "Red Chili (लाल मिर्च)", "Garlic (लहसुन)"]
+  },
+  {
+    "name": "Andhra Spicy Paneer Curry",
+    "ingredients": ["Paneer (पनीर)", "Red Chili (लाल मिर्च)", "Garlic (लहसुन)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Stew",
+    "ingredients": ["Paneer (पनीर)", "Coconut Milk (नारियल का दूध)", "Carrot (गाजर)", "Green Beans (हरी बीन्स)", "Potato (आलू)"]
+  },
+  {
+    "name": "Chilli Paneer (Dry)",
+    "ingredients": ["Paneer (पनीर)", "Capsicum (शिमला मिर्च)", "Onion (प्याज)", "Garlic (लहसुन)", "Ginger (अदरक)"]
+  },
+  {
+    "name": "Chilli Paneer (Gravy)",
+    "ingredients": ["Paneer (पनीर)", "Capsicum (शिमला मिर्च)", "Onion (प्याज)", "Garlic (लहसुन)", "Ginger (अदरक)"]
+  },
+  {
+    "name": "Paneer Jalfrezi",
+    "ingredients": ["Paneer (पनीर)", "Capsicum (शिमला मिर्च)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Pasanda",
+    "ingredients": ["Paneer (पनीर)", "Cashews (काजू)", "Cream (मलाई)", "Tomato (टमाटर)", "Onion (प्याज)"]
+  },
+  {
+    "name": "Paneer Tawa Masala",
+    "ingredients": ["Paneer (पनीर)", "Onion (प्याज)", "Tomato (टमाटर)", "Capsicum (शिमला मिर्च)"]
+  },
+  {
+    "name": "Paneer Makhanwala",
+    "ingredients": ["Paneer (पनीर)", "Butter (मक्खन)", "Tomato (टमाटर)", "Onion ( प्याज)", "Cream (मलाई)"]
+  },
+  {
+    "name": "Achari Paneer",
+    "ingredients": ["Paneer (पनीर)", "Pickle Masala (अचार मसाला)", "Onion (प्याज)", "Tomato (टमाटर)"]
+  },
+  {
+    "name": "Paneer Rezala",
+    "ingredients": ["Paneer (पनीर)", "Curd (दही)", "Cashews (काजू)", "Cream (मलाई)", "Onion (प्याज)"]
+  }
+]
