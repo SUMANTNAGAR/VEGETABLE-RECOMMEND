@@ -352,21 +352,11 @@
         <div class="chat-header">
             <span class="sabzi-icon">🥦</span> My Personal Sabzi Chef
         </div>
-        <div class="adsense-unit" id="adsense-container">
-            <!-- sabji-chatbot-header -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7869508688913658"
-                 data-ad-slot="9888625936"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
         <div class="chat-messages" id="chat-messages">
+            <!-- Welcome message will be shown here -->
             </div>
         <div class="options-area" id="options-area">
+            <!-- Authentication buttons will be shown here initially -->
             </div>
         <div class="input-area" id="input-area">
             <input type="text" id="user-input" placeholder="Type your message..." style="display: none;">
@@ -381,17 +371,100 @@
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
         const optionsArea = document.getElementById('options-area');
-        const inputArea = document.getElementById('input-area'); // New: reference to input area
-        const newMemberNameInput = document.getElementById('new-member-name-input'); // New: new member name input
-        const nextButton = document.getElementById('next-button'); // New: Next button
-        const BASE_URL = window.location.origin; // Dynamic BASE_URL for mobile/desktop
+        const inputArea = document.getElementById('input-area');
+        const newMemberNameInput = document.getElementById('new-member-name-input');
+        const nextButton = document.getElementById('next-button');
+        
+        const BASE_URL = window.location.origin;
 
-        let currentFlow = 'main_menu'; // 'main_menu', 'manage_family_choice', 'select_existing_member', 'enter_new_member_name', 'select_veg', 'select_present_members'
+        let currentFlow = 'auth'; // 'auth', 'main_menu', 'manage_family_choice', 'select_existing_member', 'enter_new_member_name', 'select_veg', 'select_present_members'
         let currentMemberName = '';
-        let allVegetables = []; // To store the list of all vegetables
-        let memberVegetableCheckboxes = {}; // To store checkbox references for veg selection
+        let allVegetables = [];
+        let memberVegetableCheckboxes = {};
+        let isLoggedIn = false;
+        let currentAuthStep = ''; // 'login', 'register', 'forgot_password', 'otp_verification', 'reset_password'
+        let forgotPasswordEmail = '';
 
         // --- Helper Functions ---
+        
+        // Better bubble management functions
+        function removeAllFormBubbles() {
+            const allBotMessages = chatMessages.querySelectorAll('.message.bot');
+            allBotMessages.forEach(msg => {
+                if (msg.querySelector('input') || msg.querySelector('button')) {
+                    msg.remove();
+                }
+            });
+        }
+        
+        function removeLastErrorBubble() {
+            const allBotMessages = chatMessages.querySelectorAll('.message.bot');
+            if (allBotMessages.length > 0) {
+                const last = allBotMessages[allBotMessages.length - 1];
+                // Remove if it's just a text message (no form elements)
+                if (!last.querySelector('input') && !last.querySelector('button')) {
+                    last.remove();
+                }
+            }
+        }
+        
+        function showError(message) {
+            removeLastErrorBubble();
+            appendMessage('bot', message);
+        }
+        
+        // Validation functions
+        function validateMobileNumber(mobile) {
+            // Remove any spaces, dashes, or other characters
+            const cleanMobile = mobile.replace(/\D/g, '');
+            
+            // Check if it's exactly 10 digits
+            if (!/^\d{10}$/.test(cleanMobile)) {
+                return { valid: false, message: 'Please enter exactly 10 digits.' };
+            }
+            
+            // Check if it starts with valid Indian mobile prefixes (6, 7, 8, 9)
+            const firstDigit = cleanMobile.charAt(0);
+            if (!['6', '7', '8', '9'].includes(firstDigit)) {
+                return { valid: false, message: 'Mobile number should start with 6, 7, 8, or 9.' };
+            }
+            
+            // Check for repeated digits pattern (like 2222222222, 1111111111)
+            const allSameDigits = /^(\d)\1{9}$/.test(cleanMobile);
+            if (allSameDigits) {
+                return { valid: false, message: 'Please enter a valid mobile number (repeated digits not allowed).' };
+            }
+            
+            // Check for sequential patterns (like 1234567890, 9876543210)
+            const isSequential = /^(0123456789|1234567890|9876543210|0987654321)$/.test(cleanMobile);
+            if (isSequential) {
+                return { valid: false, message: 'Please enter a valid mobile number (sequential patterns not allowed).' };
+            }
+            
+            return { valid: true, message: '' };
+        }
+        
+        function validateEmail(email) {
+            // Basic email validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return { valid: false, message: 'Please enter a valid email address format.' };
+            }
+            
+            // Check for common email providers
+            const commonProviders = [
+                'gmail.com', 'yahoo.com', 'yahoo.in', 'hotmail.com', 'outlook.com',
+                'rediffmail.com', 'aol.com', 'icloud.com', 'protonmail.com', 'zoho.com'
+            ];
+            
+            const domain = email.split('@')[1].toLowerCase();
+            if (!commonProviders.includes(domain)) {
+                return { valid: false, message: 'Please use a common email provider (Gmail, Yahoo, Hotmail, etc.) or contact support for private domains.' };
+            }
+            
+            return { valid: true, message: '' };
+        }
+
         function appendMessage(sender, message, options = [], customHtml = '') {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender);
@@ -400,7 +473,6 @@
             if (customHtml) {
                 bubbleDiv.innerHTML = customHtml;
             } else if (typeof message === 'string' && message.includes('\n') && sender === 'bot' && message.startsWith('Current season vegetables')) {
-                // Special rendering for seasonal veggies as cards
                 const lines = message.split('\n').filter(x => x.trim() !== '');
                 if (lines.length > 1) {
                     const vegList = lines.slice(1).join(' ').split(',').map(x => x.trim()).filter(x => x);
@@ -432,14 +504,21 @@
         }
 
         function displayOptions(options) {
-            optionsArea.innerHTML = ''; // Clear previous options
+            optionsArea.innerHTML = '';
             if (options.length > 0) {
                 optionsArea.style.display = 'flex';
                 options.forEach(optionText => {
                     const button = document.createElement('button');
                     button.classList.add('option-button');
                     button.textContent = optionText;
-                    button.onclick = () => handleOptionClick(optionText);
+                    if (!isLoggedIn && currentFlow !== 'auth') {
+                        button.disabled = true;
+                        button.style.opacity = 0.6;
+                        button.title = 'Please log in to use this feature.';
+                        button.onclick = () => alert('Please log in to use this feature.');
+                    } else {
+                        button.onclick = () => handleOptionClick(optionText);
+                    }
                     optionsArea.appendChild(button);
                 });
             } else {
@@ -499,47 +578,437 @@
                 removeLoadingDots();
                 appendMessage('bot', `Oops! An error occurred: ${error.message}. Please try again.`);
                 console.error('API Error:', error);
-                // Optionally, go back to main menu on critical errors
-                // showMainMenu(); 
                 return { status: 'error', message: error.message }; 
             }
         }
 
-        // --- Chatbot Flow Functions ---
+        // --- Authentication Chat Bubble Functions ---
 
+        // Show initial auth options
+        function showAuthScreen() {
+            currentFlow = 'auth';
+            isLoggedIn = false;
+            chatMessages.innerHTML = '';
+            appendMessage('bot', "Welcome to My Personal Sabzi Chef! 🥦\n\nPlease choose an option to continue:");
+            displayOptions(["Login", "New User"]);
+        }
+
+        // Show login form as chat bubble
+        function showLoginForm() {
+            currentAuthStep = 'login';
+            removeAllFormBubbles();
+            // Extra safety: hide and clear options area
+            optionsArea.innerHTML = '';
+            optionsArea.style.display = 'none';
+            displayOptions([]);
+            appendMessage('bot', '', [], `
+                <div>
+                    <div style="margin-bottom:8px;">Please enter your login details:</div>
+                    <input type="text" id="login-mobile" placeholder="Mobile Number" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;" onblur="validateLoginMobile()">
+                    <div id="login-mobile-error" style="color:#d32f2f;font-size:0.85em;margin-bottom:8px;display:none;"></div>
+                    <input type="password" id="login-password" placeholder="Password" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;">
+                    <div id="login-form-error" style="color:#d32f2f;font-size:0.95em;margin-bottom:8px;display:none;"></div>
+                    <button id="login-submit" style="width:100%;padding:10px;border-radius:8px;background:linear-gradient(90deg,#43e97b 0%,#38f9d7 100%);color:#fff;font-weight:600;font-size:1.1em;border:none;">Login</button>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="switch-to-register" style="padding:8px 16px;border-radius:6px;background:#6c757d;color:#fff;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">New User? Register here</button>
+                    </div>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="login-forgot" style="padding:6px 14px;border-radius:6px;background:#e0e0e0;color:#388e3c;font-weight:500;font-size:0.95em;border:none;cursor:pointer;margin-bottom:6px;">Forgot Password?</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => {
+                document.getElementById('login-submit').onclick = async function() {
+                    // Clear all error divs
+                    document.getElementById('login-mobile-error').style.display = 'none';
+                    document.getElementById('login-form-error').style.display = 'none';
+                    document.getElementById('login-mobile-error').textContent = '';
+                    document.getElementById('login-form-error').textContent = '';
+
+                    const mobile = document.getElementById('login-mobile').value.trim();
+                    const password = document.getElementById('login-password').value.trim();
+
+                    if (!mobile || !password) {
+                        const errorDiv = document.getElementById('login-form-error');
+                        errorDiv.textContent = 'Please fill in all fields.';
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    if (!validateMobileNumber(mobile).valid) {
+                        const errorDiv = document.getElementById('login-mobile-error');
+                        errorDiv.textContent = validateMobileNumber(mobile).message;
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile_number: mobile, password: password })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        showMainMenuAfterAuthSuccess('Login successful! Please continue.');
+                    } else {
+                        const errorDiv = document.getElementById('login-form-error');
+                        errorDiv.textContent = 'Invalid credentials. Try Again.';
+                        errorDiv.style.display = 'block';
+                    }
+                };
+                document.getElementById('switch-to-register').onclick = showRegisterForm;
+                document.getElementById('login-forgot').onclick = showForgotPasswordForm;
+            }, 0);
+        }
+
+        // Real-time validation functions
+        function validateLoginMobile() {
+            const mobile = document.getElementById('login-mobile').value.trim();
+            const errorDiv = document.getElementById('login-mobile-error');
+            
+            if (mobile.length === 0) {
+                errorDiv.style.display = 'none';
+                return;
+            }
+            
+            const validation = validateMobileNumber(mobile);
+            if (!validation.valid) {
+                errorDiv.textContent = validation.message;
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        // Show register form as chat bubble
+        function showRegisterForm() {
+            currentAuthStep = 'register';
+            removeAllFormBubbles();
+            // Extra safety: hide and clear options area
+            optionsArea.innerHTML = '';
+            optionsArea.style.display = 'none';
+            displayOptions([]);
+            appendMessage('bot', '', [], `
+                <div>
+                    <div style="margin-bottom:8px;">Please enter your registration details:</div>
+                    <input type="text" id="register-mobile" placeholder="Mobile Number" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;" onblur="validateRegisterMobile()">
+                    <div id="register-mobile-error" style="color:#d32f2f;font-size:0.85em;margin-bottom:8px;display:none;"></div>
+                    <input type="email" id="register-email" placeholder="Email" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;" onblur="validateRegisterEmail()">
+                    <div id="register-email-error" style="color:#d32f2f;font-size:0.85em;margin-bottom:8px;display:none;"></div>
+                    <input type="password" id="register-password" placeholder="Password" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;">
+                    <div id="register-password-error" style="color:#d32f2f;font-size:0.85em;margin-bottom:8px;display:none;"></div>
+                    <button id="register-submit" style="width:100%;padding:10px;border-radius:8px;background:linear-gradient(90deg,#43e97b 0%,#38f9d7 100%);color:#fff;font-weight:600;font-size:1.1em;border:none;">Register</button>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="switch-to-login" style="padding:8px 16px;border-radius:6px;background:#6c757d;color:#fff;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">Already have account? Login here</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => {
+                document.getElementById('register-submit').onclick = async function() {
+                    // Clear all error divs
+                    document.getElementById('register-mobile-error').style.display = 'none';
+                    document.getElementById('register-email-error').style.display = 'none';
+                    document.getElementById('register-password-error').style.display = 'none';
+                    document.getElementById('register-mobile-error').textContent = '';
+                    document.getElementById('register-email-error').textContent = '';
+                    document.getElementById('register-password-error').textContent = '';
+
+                    const mobile = document.getElementById('register-mobile').value.trim();
+                    const email = document.getElementById('register-email').value.trim();
+                    const password = document.getElementById('register-password').value.trim();
+
+                    // Mobile validation
+                    const mobileValidation = validateMobileNumber(mobile);
+                    if (!mobileValidation.valid) {
+                        const errorDiv = document.getElementById('register-mobile-error');
+                        errorDiv.textContent = mobileValidation.message;
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    // Email validation
+                    const emailValidation = validateEmail(email);
+                    if (!emailValidation.valid) {
+                        const errorDiv = document.getElementById('register-email-error');
+                        errorDiv.textContent = emailValidation.message;
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    // Password validation (optional, e.g. min length)
+                    if (!password) {
+                        const errorDiv = document.getElementById('register-password-error');
+                        errorDiv.textContent = 'Please enter a password.';
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    const response = await fetch('/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile_number: mobile, email: email, password: password })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        showMainMenuAfterAuthSuccess('Registration successful! Please continue.');
+                    } else {
+                        // Show server error in a suitable place (e.g. mobile/email/password error div or as an alert)
+                        // For now, show in mobile error div if it's about mobile, email error div if about email, else password error div
+                        if (data.message && data.message.toLowerCase().includes('mobile')) {
+                            const errorDiv = document.getElementById('register-mobile-error');
+                            errorDiv.textContent = data.message;
+                            errorDiv.style.display = 'block';
+                        } else if (data.message && data.message.toLowerCase().includes('email')) {
+                            const errorDiv = document.getElementById('register-email-error');
+                            errorDiv.textContent = data.message;
+                            errorDiv.style.display = 'block';
+                        } else {
+                            const errorDiv = document.getElementById('register-password-error');
+                            errorDiv.textContent = data.message;
+                            errorDiv.style.display = 'block';
+                        }
+                    }
+                };
+                document.getElementById('switch-to-login').onclick = showLoginForm;
+            }, 0);
+        }
+
+        // Real-time validation functions for registration
+        function validateRegisterMobile() {
+            const mobile = document.getElementById('register-mobile').value.trim();
+            const errorDiv = document.getElementById('register-mobile-error');
+            
+            if (mobile.length === 0) {
+                errorDiv.style.display = 'none';
+                return;
+            }
+            
+            const validation = validateMobileNumber(mobile);
+            if (!validation.valid) {
+                errorDiv.textContent = validation.message;
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        function validateRegisterEmail() {
+            const email = document.getElementById('register-email').value.trim();
+            const errorDiv = document.getElementById('register-email-error');
+            
+            if (email.length === 0) {
+                errorDiv.style.display = 'none';
+                return;
+            }
+            
+            const validation = validateEmail(email);
+            if (!validation.valid) {
+                errorDiv.textContent = validation.message;
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        // Show forgot password form as chat bubble
+        function showForgotPasswordForm() {
+            currentAuthStep = 'forgot_password';
+            removeAllFormBubbles();
+            // Extra safety: hide and clear options area
+            optionsArea.innerHTML = '';
+            optionsArea.style.display = 'none';
+            displayOptions([]);
+            appendMessage('bot', '', [], `
+                <div>
+                    <div style="margin-bottom:8px;">Please enter your email address to receive OTP:</div>
+                    <input type="email" id="forgot-email" placeholder="Email" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;">
+                    <button id="forgot-submit" style="width:100%;padding:10px;border-radius:8px;background:linear-gradient(90deg,#43e97b 0%,#38f9d7 100%);color:#fff;font-weight:600;font-size:1.1em;border:none;">Send OTP</button>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="back-to-login" style="padding:8px 16px;border-radius:6px;background:#6c757d;color:#fff;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">Back to Login</button>
+                    </div>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="goto-register" style="padding:8px 16px;border-radius:6px;background:#e0e0e0;color:#388e3c;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">New User? Register here</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => {
+                document.getElementById('forgot-submit').onclick = async function() {
+                    const email = document.getElementById('forgot-email').value.trim();
+                    if (!email) {
+                        showError('Please enter your email address.');
+                        return;
+                    }
+                    const response = await fetch('/forgot_password_request', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        showOtpForm(email);
+                    } else {
+                        showError(`Error: ${data.message}`);
+                    }
+                };
+                document.getElementById('back-to-login').onclick = showLoginForm;
+                document.getElementById('goto-register').onclick = showRegisterForm;
+            }, 0);
+        }
+
+        // Show OTP form as chat bubble
+        function showOtpForm(email) {
+            currentAuthStep = 'otp_verification';
+            removeAllFormBubbles();
+            // Extra safety: hide and clear options area
+            optionsArea.innerHTML = '';
+            optionsArea.style.display = 'none';
+            displayOptions([]);
+            appendMessage('bot', '', [], `
+                <div>
+                    <div style="margin-bottom:8px;">OTP has been sent to ${email}<br>Please enter the OTP:</div>
+                    <input type="text" id="otp-input" placeholder="Enter OTP" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;">
+                    <button id="otp-submit" style="width:100%;padding:10px;border-radius:8px;background:linear-gradient(90deg,#43e97b 0%,#38f9d7 100%);color:#fff;font-weight:600;font-size:1.1em;border:none;">Verify OTP</button>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="back-to-login" style="padding:8px 16px;border-radius:6px;background:#6c757d;color:#fff;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">Back to Login</button>
+                    </div>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="goto-register" style="padding:8px 16px;border-radius:6px;background:#e0e0e0;color:#388e3c;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">New User? Register here</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => {
+                document.getElementById('otp-submit').onclick = async function() {
+                    const otp = document.getElementById('otp-input').value.trim();
+                    if (!otp) {
+                        showError('Please enter the OTP.');
+                        return;
+                    }
+                    const response = await fetch('/verify_otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email, otp: otp })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        showResetPasswordForm(email, otp);
+                    } else {
+                        showError(`Invalid OTP: ${data.message}`);
+                    }
+                };
+                document.getElementById('back-to-login').onclick = showLoginForm;
+                document.getElementById('goto-register').onclick = showRegisterForm;
+            }, 0);
+        }
+
+        // Show reset password form as chat bubble
+        function showResetPasswordForm(email, otp) {
+            currentAuthStep = 'reset_password';
+            removeAllFormBubbles();
+            // Extra safety: hide and clear options area
+            optionsArea.innerHTML = '';
+            optionsArea.style.display = 'none';
+            displayOptions([]);
+            appendMessage('bot', '', [], `
+                <div>
+                    <div style="margin-bottom:8px;">Please enter your new password:</div>
+                    <input type="password" id="reset-password" placeholder="New Password" style="width:90%;margin-bottom:8px;padding:10px;border-radius:8px;border:1.5px solid #a5d6a7;">
+                    <button id="reset-submit" style="width:100%;padding:10px;border-radius:8px;background:linear-gradient(90deg,#43e97b 0%,#38f9d7 100%);color:#fff;font-weight:600;font-size:1.1em;border:none;">Reset Password</button>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="back-to-login" style="padding:8px 16px;border-radius:6px;background:#6c757d;color:#fff;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">Back to Login</button>
+                    </div>
+                    <div style="margin-top:8px;text-align:center;">
+                        <button id="goto-register" style="padding:8px 16px;border-radius:6px;background:#e0e0e0;color:#388e3c;font-weight:500;font-size:0.9em;border:none;cursor:pointer;">New User? Register here</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => {
+                document.getElementById('reset-submit').onclick = async function() {
+                    const newPassword = document.getElementById('reset-password').value.trim();
+                    if (!newPassword) {
+                        showError('Please enter a new password.');
+                        return;
+                    }
+                    const response = await fetch('/reset_password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email, otp: otp, new_password: newPassword })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        appendMessage('bot', 'Password reset successful! Please login with your new password.');
+                        setTimeout(() => showLoginForm(), 1200);
+                    } else {
+                        showError(`Error: ${data.message}`);
+                    }
+                };
+                document.getElementById('back-to-login').onclick = showLoginForm;
+                document.getElementById('goto-register').onclick = showRegisterForm;
+            }, 0);
+        }
+
+        // --- Chatbot Flow Functions ---
         async function showMainMenu() {
             chatMessages.innerHTML = '';
             currentFlow = 'main_menu';
-            toggleInput(false, false); // No direct input at main menu
+            toggleInput(false, false);
             appendMessage('bot', "Welcome to My Personal Sabzi Chef! What would you like to do?", 
-                ["Manage Family & Favorite Vegetables", "What to Cook Today?", "Current Season Vegetables", "Exit Application"]);
-            // Reset state for safety
+                ["Manage Family & Favorite Vegetables", "What to Cook Today?", "Current Season Vegetables", "Logout"]);
             currentMemberName = '';
             memberVegetableCheckboxes = {};
         }
 
         async function handleOptionClick(optionText) {
-            appendMessage('user', optionText); // Show user's choice in chat
+            appendMessage('user', optionText);
 
             switch (currentFlow) {
+                case 'auth':
+                    if (optionText === "Login") {
+                        showLoginForm();
+                    } else if (optionText === "New User") {
+                        showRegisterForm();
+                    } else if (optionText === "Try Again") {
+                        if (currentAuthStep === 'login') {
+                            showLoginForm();
+                        } else if (currentAuthStep === 'register') {
+                            showRegisterForm();
+                        } else if (currentAuthStep === 'forgot_password') {
+                            showForgotPasswordForm();
+                        } else if (currentAuthStep === 'otp_verification') {
+                            showOtpForm();
+                        } else if (currentAuthStep === 'reset_password') {
+                            showResetPasswordForm();
+                        }
+                    } else if (optionText === "Forgot Password") {
+                        showForgotPasswordForm();
+                    }
+                    break;
                 case 'main_menu':
                     if (optionText === "Manage Family & Favorite Vegetables") {
                         await manageFamilyStartFlow();
                     } else if (optionText === "What to Cook Today?") {
                         await recommendSabziFlow();
                     } else if (optionText === "Current Season Vegetables") {
-                        // Fetch and show current season vegetables
                         const vegList = await fetchAPI('/api/seasonal_vegetables');
                         if (Array.isArray(vegList) && vegList.length > 0) {
                             appendMessage('bot', `Current season vegetables available in the market:\n\n${vegList.join(', ')}`);
                         } else {
                             appendMessage('bot', 'No seasonal vegetables found or an error occurred.');
                         }
+                        currentFlow = 'showing_seasonal_veg';
+                        displayOptions(["Back to Main Menu", "What to Cook Today?", "Logout"]);
+                    } else if (optionText === "Logout") {
+                        appendMessage('bot', "Logged out successfully. Goodbye!");
+                        setTimeout(() => showAuthScreen(), 1500);
+                    }
+                    break;
+                case 'showing_seasonal_veg':
+                    if (optionText === "Back to Main Menu") {
                         showMainMenu();
-                    } else if (optionText === "Exit Application") {
-                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
-                        toggleInput(false, false); // Hide all inputs
-                        optionsArea.style.display = 'none';
+                    } else if (optionText === "What to Cook Today?") {
+                        await recommendSabziFlow();
+                    } else if (optionText === "Logout") {
+                        appendMessage('bot', "Logged out successfully. Goodbye!");
+                        setTimeout(() => showAuthScreen(), 1500);
                     }
                     break;
                 case 'manage_family_choice':
@@ -551,10 +1020,9 @@
                         showMainMenu();
                     } else if (optionText === "What to Cook Today?") {
                         await recommendSabziFlow();
-                    } else if (optionText === "Exit Application") {
-                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
-                        toggleInput(false, false);
-                        optionsArea.style.display = 'none';
+                    } else if (optionText === "Logout") {
+                        appendMessage('bot', "Logged out successfully. Goodbye!");
+                        setTimeout(() => showAuthScreen(), 1500);
                     }
                     break;
                 case 'select_existing_member':
@@ -562,10 +1030,9 @@
                         showMainMenu();
                     } else if (optionText === "What to Cook Today?") {
                         await recommendSabziFlow();
-                    } else if (optionText === "Exit Application") {
-                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
-                        toggleInput(false, false);
-                        optionsArea.style.display = 'none';
+                    } else if (optionText === "Logout") {
+                        appendMessage('bot', "Logged out successfully. Goodbye!");
+                        setTimeout(() => showAuthScreen(), 1500);
                     } else {
                         currentMemberName = optionText;
                         await selectVegetablesFlow(optionText);
@@ -576,10 +1043,9 @@
                         showMainMenu();
                     } else if (optionText === "What to Cook Today?") {
                         await recommendSabziFlow();
-                    } else if (optionText === "Exit Application") {
-                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
-                        toggleInput(false, false);
-                        optionsArea.style.display = 'none';
+                    } else if (optionText === "Logout") {
+                        appendMessage('bot', "Logged out successfully. Goodbye!");
+                        setTimeout(() => showAuthScreen(), 1500);
                     }
                     break;
                 case 'select_present_members':
@@ -587,19 +1053,19 @@
                         showMainMenu();
                     } else if (optionText === "What to Cook Today?") {
                         await recommendSabziFlow();
-                    } else if (optionText === "Exit Application") {
-                        appendMessage('bot', "Goodbye! See you next time for more delicious recommendations.");
-                        toggleInput(false, false);
-                        optionsArea.style.display = 'none';
+                    } else if (optionText === "Logout") {
+                        appendMessage('bot', "Logged out successfully. Goodbye!");
+                        setTimeout(() => showAuthScreen(), 1500);
                     }
                     break;
                 default:
                     appendMessage('bot', "I'm not sure how to respond to that option. Please try again.");
-                    showMainMenu(); // Fallback to main menu
+                    showMainMenu();
                     break;
             }
         }
 
+        // --- Family Management Functions ---
         async function manageFamilyStartFlow() {
             chatMessages.innerHTML = '';
             currentFlow = 'manage_family_choice';
@@ -639,23 +1105,23 @@
             const members = response.family_members || [];
             if (members.length === 0) {
                 appendMessage('bot', "No existing members found. Please add a new member first.");
-                await manageFamilyStartFlow(); // Go back to options
+                await manageFamilyStartFlow();
                 return;
             }
 
             let memberNames = members.map(m => m.name);
             appendMessage('bot', "Which member would you like to update?");
-            displayOptions(memberNames.concat(["Back to Main Menu", "What to Cook Today?", "Exit Application"]));
+            displayOptions(memberNames.concat(["Back to Main Menu", "What to Cook Today?", "Logout"]));
         }
 
         async function addNewMemberNameFlow() {
             currentFlow = 'enter_new_member_name';
             currentMemberName = '';
             memberVegetableCheckboxes = {};
-            toggleInput(false, true); // Show new member name input and Next button
-            newMemberNameInput.value = ''; // Clear previous input
+            toggleInput(false, true);
+            newMemberNameInput.value = '';
             appendMessage('bot', "Please type the name of the new family member you'd like to add.");
-            displayOptions(["Back to Main Menu"]); // Offer back option
+            displayOptions(["Back to Main Menu"]);
         }
 
         nextButton.addEventListener('click', async () => {
@@ -664,7 +1130,6 @@
                 appendMessage('bot', "Member name cannot be empty. Please enter a name.");
                 return;
             }
-            // Check for duplicates
             const existingMembersResponse = await fetchAPI('/api/family_members');
             if (existingMembersResponse.status !== 'error') {
                 const existingNames = (existingMembersResponse.family_members || []).map(m => m.name.toLowerCase());
@@ -674,16 +1139,15 @@
                 }
             }
             
-            appendMessage('user', newName); // Show the new name as user message
-            currentMemberName = newName; // Set the current member
-            await selectVegetablesFlow(newName); // Proceed to vegetable selection
-            toggleInput(false, false); // Hide input after processing
+            appendMessage('user', newName);
+            currentMemberName = newName;
+            await selectVegetablesFlow(newName);
+            toggleInput(false, false);
         });
         
-        // This function now handles both new and existing member veg selection
         async function selectVegetablesFlow(memberName) {
             currentFlow = 'select_veg';
-            toggleInput(false, false); // Hide generic input
+            toggleInput(false, false);
             currentMemberName = memberName;
             memberVegetableCheckboxes = {};
 
@@ -692,7 +1156,7 @@
                 showMainMenu();
                 return;
             }
-            allVegetables = allVegResponse; // Store all vegetables
+            allVegetables = allVegResponse;
 
             const memberDataResponse = await fetchAPI('/api/family_members');
             let currentFavs = [];
@@ -703,15 +1167,14 @@
                 }
             }
             
-            // Generate HTML for checkboxes
             let checkboxHtml = `
                 <p>Select ${memberName}'s favorite vegetables:</p>
                 <div class="checkbox-group">
             `;
-            memberVegetableCheckboxes = {}; // Reset checkbox references
+            memberVegetableCheckboxes = {};
             allVegetables.forEach(veg => {
                 const isChecked = currentFavs.includes(veg) ? 'checked' : '';
-                const id = `veg-${veg.replace(/[^a-zA-Z0-9]/g, '')}`; // Simple ID for checkbox
+                const id = `veg-${veg.replace(/[^a-zA-Z0-9]/g, '')}`;
                 checkboxHtml += `
                     <label for="${id}">
                         <input type="checkbox" id="${id}" value="${veg}" ${isChecked}>
@@ -724,15 +1187,10 @@
                     <button class="save-button" id="save-veg-button">Save Favorites</button>
                 </div>
             `;
-            // Debug: Log the generated HTML
-            console.log('Generated checkbox HTML:', checkboxHtml);
-            // Add a special message bubble for the checkboxes
+            
             appendMessage('bot', '', [], checkboxHtml); 
+            displayOptions(["Back to Main Menu", "What to Cook Today?", "Logout"]);
 
-            // Add global navigation options
-            displayOptions(["Back to Main Menu", "What to Cook Today?", "Exit Application"]);
-
-            // Attach event listeners after DOM update
             setTimeout(() => {
                 const saveBtn = document.getElementById('save-veg-button');
                 if (saveBtn) {
@@ -749,11 +1207,9 @@
                         });
                         if (saveResponse.status === 'success') {
                             appendMessage('bot', saveResponse.message);
-                            // Reset state after save
                             currentMemberName = '';
                             memberVegetableCheckboxes = {};
-                            // Show navigation options again
-                            displayOptions(["Back to Main Menu", "What to Cook Today?", "Exit Application"]);
+                            displayOptions(["Back to Main Menu", "What to Cook Today?", "Logout"]);
                         } else {
                             appendMessage('bot', `Failed to save preferences: ${saveResponse.message || 'Unknown error'}. Please try again.`);
                         }
@@ -765,9 +1221,8 @@
         async function recommendSabziFlow() {
             chatMessages.innerHTML = '';
             currentFlow = 'select_present_members';
-            toggleInput(false, false); // Hide direct input
+            toggleInput(false, false);
 
-            // Reset state for present members
             let presentMemberCheckboxes = {};
 
             const response = await fetchAPI('/api/family_members');
@@ -783,7 +1238,6 @@
             }
 
             let memberNames = members.map(m => m.name);
-            // Generate HTML for present members checkboxes
             let checkboxHtml = `
                 <p>Who is present today?</p>
                 <div class="checkbox-group">
@@ -804,10 +1258,8 @@
             `;
             appendMessage('bot', '', [], checkboxHtml);
 
-            // Add global navigation options
-            displayOptions(["Back to Main Menu", "Exit Application"]);
+            displayOptions(["Back to Main Menu", "Logout"]);
 
-            // Attach event listener to Get Recommendation button
             setTimeout(() => {
                 const getRecBtn = document.getElementById('get-recommendation-button');
                 if (getRecBtn) {
@@ -818,7 +1270,6 @@
                             appendMessage('bot', "Please select at least one member present today.");
                             return;
                         }
-                        // Remove only the last bot message (previous recommendation), not the entire chat
                         const allBotMessages = chatMessages.querySelectorAll('.message.bot');
                         if (allBotMessages.length > 1) {
                             allBotMessages[allBotMessages.length - 1].remove();
@@ -829,18 +1280,26 @@
                         } else {
                             appendMessage('bot', `Sorry, I couldn't get a recommendation: ${recommendationResponse.message || 'Unknown error'}.`);
                         }
-                        // Show navigation options
-                        displayOptions(["Back to Main Menu", "What to Cook Today?", "Exit Application"]);
+                        displayOptions(["Back to Main Menu", "What to Cook Today?", "Logout"]);
                     };
                 }
             }, 0);
         }
 
-        // Event Listeners (adjusted for new input elements)
-        // Note: user-input and send-button are now generally hidden,
-        // only appearing when explicitly toggled by specific flows.
-        // We'll keep their listeners in case we ever toggle them on.
-        // We'll keep their listeners in case we ever toggle them on.
+        // Show main menu after login/register success
+        function showMainMenuAfterAuthSuccess(successMsg) {
+            removeAllFormBubbles();
+            appendMessage('bot', successMsg, [
+                "Manage Family & Favorite Vegetables",
+                "What to Cook Today?",
+                "Current Season Vegetables",
+                "Logout"
+            ]);
+            currentFlow = 'main_menu';
+            isLoggedIn = true;
+        }
+
+        // Event Listeners
         sendButton.addEventListener('click', sendUserMessage);
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -848,13 +1307,12 @@
             }
         });
 
-        // This is important: handle global option clicks
-        // Initial message when the chat loads
-        showMainMenu();
-
         function sendUserMessage() {
             // Not implemented. This is a placeholder to prevent errors.
         }
+
+        // Initialize the app
+        showAuthScreen();
     </script>
 </body>
 </html>
